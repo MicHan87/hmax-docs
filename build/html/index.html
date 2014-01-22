@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Hmax’s documentation! &mdash; Hmax Documentation 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Hmax Documentation 0.01 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="#">Hmax Documentation 0.01 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-hmax-s-documentation">
+<h1>Welcome to Hmax&#8217;s documentation!<a class="headerlink" href="#welcome-to-hmax-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="os-and-hardware-prerequisites">
+<h2>OS and Hardware Prerequisites:<a class="headerlink" href="#os-and-hardware-prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>This package was developped under an ubuntu box version 12.04. I haven&#8217;t tested it on a mac or a windows machine. Since it&#8217;s writen in python and using cross paltform packages, it should be cross paltform as well, but again, it is not garantee.</p>
+<p>This was tested on linux box with an NVIDIA GTX 570 and 690 GPUs. From my experience, the 570 is &#8220;faster&#8221; than the 690. Of course faster is to be taken with grain of salt since this wasn&#8217;t failry benchmarked using all the features available on both GPUs. Which means that the cuda implementation is pretty simple and do not use the extra features that the 690 offers.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation:<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>To get the hmax package, you need to send an email to <a class="reference external" href="mailto:youssef&#46;barhomi&#37;&#52;&#48;gmail&#46;com">youssef<span>&#46;</span>barhomi<span>&#64;</span>gmail<span>&#46;</span>com</a> in order to get access to the private git hub repository, after confirmation, you can fetch the src code with this:</p>
+<div class="highlight-python"><pre>$git clone https://github.com/serre-lab/hmax.git</pre>
+</div>
+<p>Of course, this needs git to be installed on your machine (assming):</p>
+<div class="highlight-python"><pre>$sudo apt-get install git-core</pre>
+</div>
+<p>The hmax package is writen following the python packages standard, you will need to install setup tools first from here <a class="reference external" href="http://pypi.python.org/pypi/setuptools">http://pypi.python.org/pypi/setuptools</a>, then go to the hmax source directory and type this:</p>
+<div class="highlight-python"><pre>$sudo python setup.py install</pre>
+</div>
+<p>and that should take care of all your dependencies. Now let&#8217;s jump to our first demo.
+Dependencies are:
+* pycuda
+* pytables
+* shogun
+* cheetah</p>
+</div>
+<div class="section" id="run-the-model-on-caltech-101">
+<h2>Run the model on Caltech 101:<a class="headerlink" href="#run-the-model-on-caltech-101" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Download the caltech 101 database from <a class="reference external" href="http://www.vision.caltech.edu/Image_Datasets/Caltech101/101_ObjectCategories.tar.gz">here</a></p>
+</li>
+<li><p class="first">Go to the file hmax/models/params.py where all model parameters are defined. the first model is the basic model (ventral_1), you will need to change the directory name of caltech 101 from 101_Objectcategories... to caltech_101. The code assumes your hmax is under /home/youssef/src/hmax and you caltech_101 is under /home/youssef/caltech_101. If you need to change anyhting, that would be home_dir variable and hmax_path and dir_images</p>
+</li>
+<li><p class="first">go back to your hmax root dir and do:</p>
+<div class="highlight-python"><pre>$python ./run_hmax.py exp_1 ventral_1</pre>
+</div>
+</li>
+</ul>
+<p>which basically runs hmax on caltech_101 by extracting features from 15 traing images from each class (102 classes) and 15 testing images from each class (not overlapping). The generates a 1000 c1 words dictionary then extract c2 features. At the end it classifies
+* when it&#8217;s done, it will print classification results</p>
+</div>
+<div class="section" id="directory-structure">
+<h2>Directory structure:<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
+<img alt="figures/dir_structure_2.jpeg" src="figures/dir_structure_2.jpeg" />
+</div>
+</div>
+<div class="section" id="design">
+<h1>Design:<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h1>
+<p>This document is intended to describe how this package will work starting from the user perspective point of you.</p>
+<div class="section" id="use-cases">
+<h2>Use cases:<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong>Use case #1:</strong></dt>
+<dd><p class="first">running a model of gray or color images category classification</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">p</span>       <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">ventral_1</span><span class="p">()</span>
+<span class="n">data</span>    <span class="o">=</span> <span class="n">get_input</span><span class="o">.</span><span class="n">from_images</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">l_words</span> <span class="o">=</span> <span class="n">ventral</span><span class="o">.</span><span class="n">get_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">l_c2</span>    <span class="o">=</span> <span class="n">ventral</span><span class="o">.</span><span class="n">get_c2</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">l_words</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">classification</span><span class="o">.</span><span class="n">svm</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Use case #2:</strong></dt>
+<dd>running the use case #1 while exploring the parameter space</dd>
+<dt><strong>Use case 3:</strong></dt>
+<dd>running temporal model on few videos (related to the mouse project)
+PS: if parameter space exploration needed, follow #2</dd>
+<dt><strong>Use case #4:</strong></dt>
+<dd>temporal model in real time (related to locomotion project)</dd>
+<dt><strong>Use case #5:</strong></dt>
+<dd>shape hmax on ROS (PR-2 project)</dd>
+<dt><strong>Use case #6:</strong></dt>
+<dd>stereo vision processing</dd>
+<dt><strong>Use case #7:</strong></dt>
+<dd>texture vs contour experiments</dd>
+<dt><strong>Use case #8:</strong></dt>
+<dd>Contours generation from images (david&#8217;s project)</dd>
+<dt><strong>Use case #9:</strong></dt>
+<dd>be able to switch to different kernels for extracting features
+These possibilities include:
+* libjacket from accelereyes
+* theano
+* pyopencl
+* pure python
+* python gpu library from mason
+* other cuda kernels using NPP cuda libraries</dd>
+<dt><strong>Challenges:</strong></dt>
+<dd><ul class="first last simple">
+<li>replace kernels easily</li>
+<li>get all layers from gpu for debuging purposes</li>
+<li>comparing different kernel outputs to other implementations (pycuda compared to matlab code)</li>
+<li>be able to run kernels differenetly thanks to code template generation with cheetah (meta programming)</li>
+<li>do &#8220;real time&#8221; processing and be able to show it (a bit like opencv)</li>
+<li>be able to include easily opencv algorithms with my code</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="functions-definitions">
+<h2>Functions definitions<a class="headerlink" href="#functions-definitions" title="Permalink to this headline">¶</a></h2>
+<p>Here is a list of few function definitions that will be the building blocks of the package. I will try to keep them as simple and as short as possible for modularity and easy maintenance purposes. The different building blocks consist of:
+* cuda kernel functions that will take a data input pointer (be batch of images, or another layer) to generate a layer (all data are on the gpu, no device&#8211;host transfers involved)
+* python functions that will call cuda kernel functions to process data in batches
+* python functions that will run a full model
+* python functions that will run many models (good for parameter space purposes)</p>
+<p>![DesignCode 2 ](<a class="reference external" href="https://f.cloud.github.com/assets/308005/37048/1d9fbdb0-53a2-11e2-8cd2-bf874d93f6fe.png">https://f.cloud.github.com/assets/308005/37048/1d9fbdb0-53a2-11e2-8cd2-bf874d93f6fe.png</a>)</p>
+<p>Extracting c1 features from a list of image files:
+Note the parallel computing is done outside this function in order to keep it very modular and simple to use. It can also be used to generate c1 features from one image only (batch_size = 1)
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+def extract_c1(l_files, p):</p>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>p = params.ventral_1()
+l_files = data.input_{images,videos}(p)</p>
+<blockquote>
+<div>l_files = data.list_files(p)
+data.store_in_pytable(l_files, p)</div></blockquote>
+<dl class="docutils">
+<dt>l_words = model.ventral.get_words(l_files, p)</dt>
+<dd><p class="first">finished = False
+l_words = []
+while not finished:</p>
+<blockquote class="last">
+<div>l_files, finished = data.load_batch_pytable(p, batch_size, criteria = &#8216;dictionary_processing&#8217;)
+l_words += ventral.get_words_from_list(l_files, p)</div></blockquote>
+</dd>
+</dl>
+</div>
+<div class="section" id="speedup-ideas">
+<h2>Speedup ideas:<a class="headerlink" href="#speedup-ideas" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><dl class="first docutils">
+<dt>use numexpr for complex numpy operations because it doesn&#8217;t use temporary memory caches and run the operation on all cpu cores by default</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numexpr</span> <span class="kn">as</span> <span class="nn">ne</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ne</span><span class="o">.</span><span class="n">set_num_threads</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>  <span class="c"># using just 8 threads, if left not</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timeit</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s">&quot;a**2 + b**2 + 2*a*b&quot;</span><span class="p">)</span>
+<span class="go">100 loops, best of 3: 3.15 ms per loop  # 6.8x faster than NumPy</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p class="first">use blosc for fast data copying and compression from cache to memory <a class="reference external" href="http://blosc.pytables.org/trac">http://blosc.pytables.org/trac</a></p>
+</li>
+<li><p class="first">while transfering data to engines, I should keep them busy processing the previous data, a bit like pinned memory on gpu (not sure what is it called)</p>
+</li>
+</ul>
+</div>
+<div class="section" id="few-performance-numbers">
+<h2>few performance numbers:<a class="headerlink" href="#few-performance-numbers" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>speed transfer of data from ipython to one engine is = 160MB/s and to 12 engines at the same time is 43MB/s &#8211;&gt; need to be revaluated when using my ethernet fast switch</li>
+</ul>
+</div>
+<div class="section" id="questions">
+<h2>Questions:<a class="headerlink" href="#questions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>shall send basic list of files to extract_features or a dictionary that has all the infos possible</li>
+</ul>
+</div>
+<div class="section" id="unit-tests">
+<h2>Unit tests:<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>check for image width or height that is smaller than biggest gabor size</li>
+<li>check before sending jobs to engines if they can handle the list given memory wise (limited by size of dict of files, dict of words and data output than can be bigger than memory) &#8211;&gt; make something at jobs scattering level to create some granularity on that</li>
+</ul>
+</div>
+<div class="section" id="variables-definitions">
+<h2>Variables definitions:<a class="headerlink" href="#variables-definitions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>l_* : list of *</li>
+<li>a_* : numpy array of * (not used often)</li>
+<li>*_gpu: * variable is on the gpu memory</li>
+</ul>
+</div>
+<div class="section" id="parallel-computing-framework">
+<h2>Parallel computing framework:<a class="headerlink" href="#parallel-computing-framework" title="Permalink to this headline">¶</a></h2>
+<p>I decided to use iPython for processing data in parallel since it offers a very easy framework for scattering and gathering data from a multiple of engines. The figure below shows how one node runs the ipython controller and 4 ipengines are running on one node (4 threads) or 4 differnt nodes can simplify greately data processing parallisation.</p>
+<p>![DesignCode 1 ](<a class="reference external" href="https://f.cloud.github.com/assets/308005/37027/736eb6a6-539d-11e2-8496-f0974676a495.png">https://f.cloud.github.com/assets/308005/37027/736eb6a6-539d-11e2-8496-f0974676a495.png</a>)</p>
+</div>
+<div class="section" id="experiment-defintion">
+<h2>Experiment defintion:<a class="headerlink" href="#experiment-defintion" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>generate model parameters</li>
+<li>allocate resources (start one controller and multiple engines)</li>
+<li>scatter data among engines</li>
+<li>run engines and extract features</li>
+<li>gather all results from engines</li>
+<li>classification on the controller</li>
+</ol>
+</div>
+<div class="section" id="generating-reports">
+<h2>Generating reports:<a class="headerlink" href="#generating-reports" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="generating-automtic-documentation">
+<h2>Generating automtic documentation<a class="headerlink" href="#generating-automtic-documentation" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="synchronising-dependencies-imports-among-engines">
+<h2>Synchronising dependencies imports among engines<a class="headerlink" href="#synchronising-dependencies-imports-among-engines" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="mongodb-database-features">
+<h2>MongoDB database features:<a class="headerlink" href="#mongodb-database-features" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Motivations:</dt>
+<dd><ul class="first last simple">
+<li>keep track of what has been processed (batch wise)</li>
+<li>record error messages if a batch of data made the kernel crash</li>
+<li>be able to get to the wrong batch and run it again</li>
+<li>check if all images/data have been processed (before classification level)</li>
+<li>keep track of labels etc</li>
+</ul>
+</dd>
+<dt>Ideas of potential use:</dt>
+<dd><ul class="first last simple">
+<li>each engine creates its own db and record data in them about whatever they have processed</li>
+<li>at the end of each run, engines return dbs to the controller to generate one db</li>
+<li>the controller scans the master db and checks if no error has been detected</li>
+<li>the controller proceeds to the classification phase</li>
+<li>at the classification level, classification results and confidence numbers will be writen on the database for each image (for post processing later)</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to Hmax&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#os-and-hardware-prerequisites">OS and Hardware Prerequisites:</a></li>
+<li><a class="reference internal" href="#installation">Installation:</a></li>
+<li><a class="reference internal" href="#run-the-model-on-caltech-101">Run the model on Caltech 101:</a></li>
+<li><a class="reference internal" href="#directory-structure">Directory structure:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#design">Design:</a><ul>
+<li><a class="reference internal" href="#use-cases">Use cases:</a></li>
+<li><a class="reference internal" href="#functions-definitions">Functions definitions</a></li>
+<li><a class="reference internal" href="#speedup-ideas">Speedup ideas:</a></li>
+<li><a class="reference internal" href="#few-performance-numbers">few performance numbers:</a></li>
+<li><a class="reference internal" href="#questions">Questions:</a></li>
+<li><a class="reference internal" href="#unit-tests">Unit tests:</a></li>
+<li><a class="reference internal" href="#variables-definitions">Variables definitions:</a></li>
+<li><a class="reference internal" href="#parallel-computing-framework">Parallel computing framework:</a></li>
+<li><a class="reference internal" href="#experiment-defintion">Experiment defintion:</a></li>
+<li><a class="reference internal" href="#generating-reports">Generating reports:</a></li>
+<li><a class="reference internal" href="#generating-automtic-documentation">Generating automtic documentation</a></li>
+<li><a class="reference internal" href="#synchronising-dependencies-imports-among-engines">Synchronising dependencies imports among engines</a></li>
+<li><a class="reference internal" href="#mongodb-database-features">MongoDB database features:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="#">Hmax Documentation 0.01 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Youssef Barhomi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>
